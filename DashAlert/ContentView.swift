@@ -103,6 +103,7 @@ struct ContentView: View {
                 .frame(maxHeight: .infinity, alignment: .bottom)
             }
         }
+        .ignoresSafeArea(.keyboard)
         .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
     }
 }
