@@ -1,17 +1,12 @@
-//
-//  DashAlert.swift
-//  DashAlert
-//
-//  Created by kariem on 1/27/25.
-//
-
 import SwiftUI
 
 @main
-struct Test2App: App {
+struct DashAlertApp: App {
+    @StateObject private var themeManager = ThemeManager()
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(themeManager)
         }
     }
 }

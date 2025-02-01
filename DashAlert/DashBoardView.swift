@@ -19,7 +19,7 @@ struct WarningSign: Identifiable, Hashable {
     let causes: [Cause]
 }
 
-// Update the WarningSignsViewModel to include the new causes
+// Stores all the signs and filters the signs
 class WarningSignsViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var signs = [
@@ -414,23 +414,11 @@ class WarningSignsViewModel: ObservableObject {
         }
         return signs.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }
-    
-    var groupedSigns: [String: [WarningSign]] {
-        var groupedSigns: [String: [WarningSign]] = [:]
-        for sign in filteredSigns {
-            if var signs = groupedSigns[sign.image] {
-                signs.append(sign)
-                groupedSigns[sign.image] = signs
-            } else {
-                groupedSigns[sign.image] = [sign]
-            }
-        }
-        return groupedSigns
-    }
 }
 
 // Helper view for detail sections
 struct InfoSection: View {
+    @EnvironmentObject var themeManager: ThemeManager
     let title: String
     let content: String
     
@@ -441,19 +429,20 @@ struct InfoSection: View {
                 .foregroundColor(.dashAlertGreen)
             
             Text(content)
-                .foregroundColor(.white)
+                .foregroundColor(Color.dashAlertWhite)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.dashAlertGray)
                 .cornerRadius(12)
         }
         .padding(.horizontal)
+        .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
     }
 }
-// Update the GroupedDetailView to display a list of causes
+// GroupDetailView is for when multiple causes have the same sign It controls the multiple causes and displays them in a neat orderly manor.
 struct GroupedDetailView: View {
     let sign: WarningSign
-    
+    @EnvironmentObject var themeManager: ThemeManager
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
@@ -469,7 +458,7 @@ struct GroupedDetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(sign.name)
                             .font(.title)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.dashAlertWhite)
                             .fontWeight(.bold)
                     }
                 }
@@ -485,9 +474,9 @@ struct GroupedDetailView: View {
                         
                         Text("Description:")
                             .font(.subheadline)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.dashAlertWhite)
                         Text(cause.description)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.dashAlertWhite)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.dashAlertGray)
@@ -495,9 +484,9 @@ struct GroupedDetailView: View {
                         
                         Text("Solution:")
                             .font(.subheadline)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.dashAlertWhite)
                         Text(cause.solution)
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.dashAlertWhite)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.dashAlertGray)
@@ -506,9 +495,9 @@ struct GroupedDetailView: View {
                         if cause.isComplexRepair, let cost = cause.averageCost {
                             Text("Average Repair Cost:")
                                 .font(.subheadline)
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.dashAlertWhite)
                             Text(String(format: "$%.2f", cost))
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.dashAlertWhite)
                                 .padding()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(Color.dashAlertGray)
@@ -527,21 +516,23 @@ struct GroupedDetailView: View {
         }
         .background(Color.dashAlertBlack)
         .navigationBarTitleDisplayMode(.inline)
+        .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
     }
+    
 }
 
 
-// Update the SignRowView to display the number of causes
+// SignRowView SetsUp the signs in a nice and neat structure for people to look at.
 struct SignRowView: View {
     let sign: WarningSign
-    
+    @EnvironmentObject var themeManager: ThemeManager
     var body: some View {
         HStack(spacing: 16) {
             Image(sign.image)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
-                .background(Color.dashAlertBlack)
+                .background(Color.black)
                 .clipShape(Circle())
                 .overlay(Circle().stroke(Color.white, lineWidth: 2))
         }
@@ -552,12 +543,13 @@ struct SignRowView: View {
                 .fill(Color.dashAlertDarkGray)
         )
         .padding(.vertical, 4)
+        .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
     }
 }
-
+// Main DashBoardView
 struct DashboardView: View {
     @StateObject private var viewModel = WarningSignsViewModel()
-    
+    @EnvironmentObject var themeManager: ThemeManager
     let columns = [
         GridItem(.flexible()),
         GridItem(.flexible()),
@@ -565,7 +557,6 @@ struct DashboardView: View {
     ]
     
     var body: some View {
-        
         NavigationView {
             ZStack {
                 Color.dashAlertBlack
@@ -574,24 +565,25 @@ struct DashboardView: View {
                 VStack(spacing: 0) {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 8) {
-                            ForEach(viewModel.groupedSigns.keys.sorted(), id: \.self) { key in
-                                NavigationLink(destination: GroupedDetailView(sign: viewModel.groupedSigns[key]!.first!)) {
-                                    SignRowView(sign: viewModel.groupedSigns[key]!.first!)
+                            ForEach(viewModel.filteredSigns) { sign in
+                                NavigationLink(destination: GroupedDetailView(sign: sign)) {
+                                    SignRowView(sign: sign)
                                 }
                             }
                         }
                         .padding(.vertical, 8)
                     }
-                    
+                    	
                     Spacer()
                     SearchBar(text: $viewModel.searchText)
                         .padding(.bottom)
                 }
             }
             .navigationBarTitle("Dashboard Signs", displayMode: .large)
-            .toolbarColorScheme(.dark, for: .navigationBar)
-            .toolbarBackground(Color.dashAlertBlack, for: .navigationBar)
+            .toolbarColorScheme(themeManager.isDarkMode ? .dark : .light, for: .navigationBar)
+            .toolbarBackground(themeManager.isDarkMode ? Color.black : Color.white, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
         }
     }
 }
@@ -599,7 +591,7 @@ struct DashboardView: View {
 // Search Bar Component
 struct SearchBar: View {
     @Binding var text: String
-    
+    @EnvironmentObject var themeManager: ThemeManager
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
@@ -614,5 +606,7 @@ struct SearchBar: View {
         .background(Color.dashAlertDarkGray)
         .cornerRadius(12)
         .padding(.bottom)
+        .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
     }
 }
+	

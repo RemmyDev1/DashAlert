@@ -1,7 +1,7 @@
-//
-//  ThemeManeger\.swift
-//  DashAlert
-//
-//  Created by kariem on 2/1/25.
-//
+import SwiftUI
 
+class ThemeManager: ObservableObject {
+    @AppStorage("isDarkMode") var isDarkMode = false {
+        willSet { objectWillChange.send() } // Forces refresh when changed
+    }
+}
