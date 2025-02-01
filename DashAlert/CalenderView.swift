@@ -5,6 +5,9 @@ struct CalenderView: View {
     @State private var title: String = ""
     @State private var dueDate: Date = Date()
     @State private var notes: String = ""
+    @State private var priority: String = "Medium"
+    
+    let priorities = ["Low", "Medium", "High"]
     
     @State private var eventStore: EKEventStore = EKEventStore()
     @State private var hasAccessToReminders = false
@@ -48,17 +51,31 @@ struct CalenderView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.white)
                             DatePicker("Due Date", selection: $dueDate)
-                                .padding()
+                                .padding()		
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(Color.dashAlertBlack)
                                 .cornerRadius(12)
+                            
+                            Text("Priority:")
+                                .font(.subheadline)
+                                .foregroundColor(.white)
+                            Picker("Priority", selection: $priority) {
+                                ForEach(priorities, id: \.self) {
+                                    Text($0)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.dashAlertBlack)
+                            .cornerRadius(12)
                             
                             Text("Notes:")
                                 .font(.subheadline)
                                 .foregroundColor(.white)
                             TextField("Notes", text: $notes)
                                 .textFieldStyle(.plain)
-                                .foregroundColor(Color.dashAlertWhite	)
+                                .foregroundColor(Color.dashAlertWhite    )
                                 .accentColor(.dashAlertGreen)
                                 .padding()
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -99,6 +116,7 @@ struct CalenderView: View {
                 title = ""
                 notes = ""
                 dueDate = Date()
+                priority = "Medium"
             })
             
         }
@@ -142,6 +160,22 @@ struct CalenderView: View {
             reminder.title = title
             reminder.dueDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: dueDate)
             reminder.notes = notes
+            let alarm = EKAlarm(absoluteDate: dueDate)
+            reminder.addAlarm(alarm)
+            
+            // Convert priority string to Int
+            var priorityValue: Int = 0
+            switch priority {
+            case "Low":
+                priorityValue = 0
+            case "Medium":
+                priorityValue = 1
+            case "High":
+                priorityValue = 2
+            default:
+                priorityValue = 1
+            }
+            reminder.priority = priorityValue
             
             reminder.calendar = calendar
             
