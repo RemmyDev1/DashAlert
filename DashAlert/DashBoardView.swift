@@ -8,6 +8,7 @@ struct Cause: Identifiable, Hashable {
     let description: String
     let solution: String
     let isComplexRepair: Bool
+    let continueDriving: String
     let averageCost: Double?
 }
 
@@ -32,6 +33,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates that one or more cylinders in the engine are misfiring, which can affect engine performance and fuel economy.",
                     solution: "Check spark plugs, ignition coils, and fuel injectors; may require replacing faulty components.",
                     isComplexRepair: true,
+                    continueDriving: "No, do not continue driving. Misfires can cause further damage to the engine.",
                     averageCost: 400
 
                 ),
@@ -40,21 +42,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates an issue with the engine or emissions system. Common causes include loose gas cap, faulty oxygen sensor, or catalytic converter issues.",
                     solution: "First, check if the gas cap is loose and tighten it. If the light persists after driving for a while, professional diagnosis is needed.",
                     isComplexRepair: true,
-                    averageCost: 350
-
-                ),
-                Cause(
-                    name: "Check Engine Light",
-                    description: "Indicates an issue with the engine or emissions system. Common causes include loose gas cap, faulty oxygen sensor, or catalytic converter issues.",
-                    solution: "First, check if the gas cap is loose and tighten it. If the light persists after driving for a while, professional diagnosis is needed.",
-                    isComplexRepair: true,
-                    averageCost: 350
-                ),
-                Cause(
-                    name: "Check Engine Light",
-                    description: "Indicates an issue with the engine or emissions system. Common causes include loose gas cap, faulty oxygen sensor, or catalytic converter issues.",
-                    solution: "First, check if the gas cap is loose and tighten it. If the light persists after driving for a while, professional diagnosis is needed.",
-                    isComplexRepair: true,
+                    continueDriving: "Yes, but only to a nearby repair shop. Avoid long trips.",
                     averageCost: 350
 
                 ),
@@ -63,6 +51,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates a malfunction in the Engine Control Unit (ECU), which can affect engine performance and drivability.",
                     solution: "Diagnose with an OBD-II scanner; may require reprogramming or replacing the ECU.",
                     isComplexRepair: true,
+                    continueDriving: "No, do not continue driving. ECU failure can cause unpredictable behavior.",
                     averageCost: 800
                 )
             ]
@@ -76,6 +65,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates dangerous low oil pressure which can cause severe engine damage.",
                     solution: "Immediately pull over safely and turn off the engine. Check oil level when engine is cool.",
                     isComplexRepair: false,
+                    continueDriving: "No, do not continue driving. Low oil pressure can cause engine failure.",
                     averageCost: nil
                 )
             ]
@@ -89,11 +79,12 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates charging system problem or failing battery.",
                     solution: "Check battery terminals for corrosion and ensure they're tight. If persists, battery or alternator may need replacement.",
                     isComplexRepair: true,
-                    averageCost: 250
+                    continueDriving: "Yes, but only to a nearby repair shop. Avoid long trips.",
+                    averageCost: 600
                 )
             ]
         ),
-        WarningSign(
+        WarningSign(	
             name: "Coolant Temperature Warning",
             image: "CoolantTemperatureWarning",
             causes: [
@@ -102,7 +93,8 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Warns of an overheating engine due to low coolant or a failing cooling system.",
                     solution: "Refill coolant, check for leaks, and inspect radiator, water pump, and thermostat.",
                     isComplexRepair: true,
-                    averageCost: 250
+                    continueDriving: "No, do not continue driving. Overheating can cause engine damage.",
+                    averageCost: 500
                 )
             ]
         ),
@@ -115,6 +107,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates low brake fluid or an issue with the braking system.",
                     solution: "Check brake fluid levels and brake pads; may require bleeding the brake system or replacing components.",
                     isComplexRepair: true,
+                    continueDriving: "No, do not continue driving. Brake failure can cause accidents.",
                     averageCost: 300
                 )
             ]
@@ -128,6 +121,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates a problem with the Anti-lock Braking System (ABS).",
                     solution: "Diagnose with a scanner; repair may involve replacing ABS sensors or the control module.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but exercise caution. ABS failure can affect braking performance.",
                     averageCost: 400
                 )
             ]
@@ -141,6 +135,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Signals low tire pressure in one or more tires.",
                     solution: "Check and inflate tires to the recommended pressure; replace faulty TPMS sensors if needed.",
                     isComplexRepair: false,
+                    continueDriving: "Yes, but check tire pressure as soon as possible.",
                     averageCost: 50
                 )
             ]
@@ -154,7 +149,8 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates a fault in the airbag system, which may prevent deployment in an accident.",
                     solution: "Diagnose with a scanner; may require replacing airbag sensors or control module.",
                     isComplexRepair: true,
-                    averageCost: 500
+                    continueDriving: "Yes, but get serviced as soon as possible. Airbags may not deploy in an accident.",
+                    averageCost: 400
                 )
             ]
         ),
@@ -167,7 +163,8 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates a failure in the power steering system, making steering harder.",
                     solution: "Check power steering fluid levels and inspect the system for leaks or electronic faults.",
                     isComplexRepair: true,
-                    averageCost: 350
+                    continueDriving: "Yes, but exercise caution. Power steering failure can affect steering performance.",
+                    averageCost: 650
                 )
             ]
         ),
@@ -180,6 +177,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates that the transmission is overheating.",
                     solution: "Check transmission fluid level and condition; may require replacing the fluid or repairing the cooling system.",
                     isComplexRepair: true,
+                    continueDriving: "No, do not continue driving. Transmission overheating can cause damage.",
                     averageCost: 400
                 )
             ]
@@ -193,6 +191,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates a loose or missing fuel cap, which can affect emissions.",
                     solution: "Tighten or replace the fuel cap.",
                     isComplexRepair: false,
+                    continueDriving: "Yes, but check the fuel cap as soon as possible.",
                     averageCost: 20
                 )
             ]
@@ -206,6 +205,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates an issue with the glow plugs or preheating system.",
                     solution: "Check and replace faulty glow plugs.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but only to a nearby repair shop. Avoid long trips.",
                     averageCost: 250
                 )
             ]
@@ -219,6 +219,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates an issue with the traction control system.",
                     solution: "Check wheel speed sensors and ABS module; may require resetting or replacing sensors.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but exercise caution. Traction control failure can affect vehicle stability.",
                     averageCost: 300
                 )
             ]
@@ -232,6 +233,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Signals an overheating engine.",
                     solution: "Turn off the engine, let it cool, and check coolant levels; inspect the radiator and thermostat.",
                     isComplexRepair: true,
+                    continueDriving: "No, do not continue driving. Overheating can cause engine damage.",
                     averageCost: 350
                 )
             ]
@@ -245,7 +247,8 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates a malfunctioning seat belt sensor, which may prevent proper detection of a fastened seatbelt.",
                     solution: "Check the seat belt sensor wiring and connections; replace the sensor if faulty.",
                     isComplexRepair: true,
-                    averageCost: 200
+                    continueDriving: "Yes, safe to drive. Get serviced soon to prevent potential starting issues. Seat belt failure can cause injury.",
+                    averageCost: 150
                 )
             ]
         ),
@@ -258,6 +261,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "Indicates a blockage in the Diesel Particulate Filter (DPF), which can lead to reduced engine performance.",
                     solution: "Perform a forced regeneration or replace the DPF if clogged.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but only to a nearby repair shop. Avoid long trips.",
                     averageCost: 1000
                 )
             ]
@@ -271,6 +275,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Check Engine Light' or 'Exhaust System Light'. It indicates an issue with the exhaust system, such as a catalytic converter failure or an exhaust leak.",
                     solution: "Inspect the exhaust system and replace damaged parts as needed.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but only to a nearby repair shop. Avoid long trips.",
                     averageCost: 600
                 )
             ]
@@ -284,6 +289,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Powertrain Malfunction Light'. It indicates a fault in the transmission, drivetrain, or related components.",
                     solution: "Diagnose with a scanner; repairs may involve transmission fluid changes, sensor replacements, or full transmission repair.",
                     isComplexRepair: true,
+                    continueDriving: "No, do not continue driving. Powertrain failure can cause unpredictable behavior.",
                     averageCost: 1000
                 )
             ]
@@ -297,6 +303,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Differential Warning Light'. It indicates an issue with the differential, which can affect vehicle handling and power distribution.",
                     solution: "Inspect the differential for fluid leaks or gear damage; may require fluid replacement or full differential repair.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but only to a nearby repair shop. Avoid long trips.",
                     averageCost: 800
                 )
             ]
@@ -310,7 +317,8 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Auto Start/Stop Warning Light'. It indicates a malfunction in the automatic start/stop system, which can affect fuel efficiency.",
                     solution: "Check the battery, alternator, and system sensors; may require a system reset or component replacement.",
                     isComplexRepair: true,
-                    averageCost: 300
+                    continueDriving: "Yes, but only to a nearby repair shop. Avoid long trips.",
+                    averageCost: 250
                 )
             ]
         ),
@@ -323,7 +331,8 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Clutch Warning Light'. It indicates a problem with the clutch system, such as low hydraulic fluid or worn clutch plates.",
                     solution: "Check hydraulic fluid levels and inspect clutch components; may require clutch replacement.",
                     isComplexRepair: true,
-                    averageCost: 900
+                    continueDriving: "No, do not continue driving. Clutch failure can cause loss of control.",
+                    averageCost: 1400
                 )
             ]
         ),
@@ -336,6 +345,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Parking Brake Warning Light'. It indicates a malfunction in the electronic parking brake system, which may prevent it from engaging or disengaging.",
                     solution: "Inspect wiring and sensors; may require recalibration or replacement of the brake actuator.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, safe to drive. Get serviced soon to prevent potential starting issues.",
                     averageCost: 450
                 )
             ]
@@ -349,6 +359,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Immobilizer Warning Light'. It indicates a fault in the vehicle’s anti-theft system, which may prevent the engine from starting.",
                     solution: "Check the key fob battery and immobilizer system; may require reprogramming or sensor replacement.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, safe to drive. Get serviced soon to prevent potential starting issues.",
                     averageCost: 350
                 )
             ]
@@ -362,6 +373,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Lane Departure Warning Light'. It indicates an issue with the lane departure warning or lane-keeping assist system.",
                     solution: "Check sensors and cameras for obstructions; may require recalibration or replacement.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but exercise caution. Lane departure failure can cause accidents.",
                     averageCost: 500
                 )
             ]
@@ -375,6 +387,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Cruise Control Warning Light'. It indicates a malfunction in the adaptive cruise control system, affecting speed and braking automation.",
                     solution: "Inspect radar and camera sensors; may require a reset or sensor replacement.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but exercise caution. Adaptive cruise control failure can cause accidents.",
                     averageCost: 600
                 )
             ]
@@ -388,6 +401,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Suspension Warning Light'. It indicates an issue with the air suspension or adaptive dampers, leading to poor ride quality.",
                     solution: "Check for air leaks, sensor faults, or worn suspension components; may require shock or strut replacement.",
                     isComplexRepair: true,
+                    continueDriving: "Yes, but exercise caution. Suspension failure can cause accidents.",
                     averageCost: 1200
                 )
             ]
@@ -401,6 +415,7 @@ class WarningSignsViewModel: ObservableObject {
                     description: "This failure is usually represented by the 'Hybrid System Warning Light'. It indicates a fault in the hybrid powertrain, such as battery or inverter issues.",
                     solution: "Check the hybrid battery and power control module; may require battery replacement or system reset.",
                     isComplexRepair: true,
+                    continueDriving: "No, do not continue driving. Hybrid system failure can cause unpredictable behavior.",
                     averageCost: 2000
                 )
             ]
@@ -491,6 +506,15 @@ struct GroupedDetailView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.dashAlertGray)
                             .cornerRadius(12)
+                        Text("Can You Keep Driving:")
+                            .font(.subheadline)
+                            .foregroundColor(Color.dashAlertWhite)
+                        Text(cause.continueDriving)
+                            .foregroundColor(Color.dashAlertWhite)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.dashAlertGray)
+                            .cornerRadius(12)
                         
                         if cause.isComplexRepair, let cost = cause.averageCost {
                             Text("Average Repair Cost:")
@@ -503,6 +527,7 @@ struct GroupedDetailView: View {
                                 .background(Color.dashAlertGray)
                                 .cornerRadius(12)
                         }
+                        
                     }
                     .padding(.horizontal)
                     .padding(.vertical, 8)
