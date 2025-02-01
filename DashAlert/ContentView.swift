@@ -27,7 +27,7 @@ struct ContentView: View {
                         themeManager.isDarkMode.toggle()
                     }) {
                         if themeManager.isDarkMode == true {
-                            Image(systemName: "moon")
+                            Image(systemName: "sun.max.fill")
                                 .font(.title)
                                 .padding(.vertical, 3)
                                 .padding(.horizontal, 6)
@@ -35,7 +35,7 @@ struct ContentView: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(10)
                         }else {
-                            Image(systemName: "sun.max.fill")
+                            Image(systemName: "moon")
                                 .font(.title)
                                 .padding(.vertical, 3)
                                 .padding(.horizontal, 6)
