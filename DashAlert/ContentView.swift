@@ -20,7 +20,7 @@ struct ContentView: View {
             }
             //Theme Switch Button
             VStack {
-                HStack {
+                HStack {	
                     Spacer()
                     Button(action: {
                         //FlipFlop Between Values
