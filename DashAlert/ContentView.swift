@@ -1,11 +1,7 @@
 import SwiftUI
 import EventKit
 
-// Main View
-import SwiftUI
-import EventKit
-
-// Custom shape to round specific corners (top corners only in our case)
+// Custom shape to round specific corners
 struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity
     var corners: UIRectCorner = .allCorners
@@ -26,6 +22,7 @@ struct ContentView: View {
     @State private var isDashboardView = false
     @EnvironmentObject var themeManager: ThemeManager
     @State private var isSettingsMenuOpen = false
+    
     @AppStorage("selectedCountry") private var selectedCountry = "United States"
 
     let countries = ["United States", "Canada", "Mexico", "United Kingdom", "Australia", "Germany", "France", "Italy", "Spain", "China", "Japan", "India"]
@@ -43,7 +40,7 @@ struct ContentView: View {
                 } else if isDashboardView {
                     DashboardView()
                 } else {
-                    HomeView(selectedCountry: $selectedCountry, countries: countries)
+                    HomeView(isDashboardView: $isDashboardView, selectedCountry: $selectedCountry, countries: countries)
                 }
                 Spacer()  // Push content to the top
             }
@@ -189,6 +186,7 @@ struct SettingsMenu: View {
 }
 
 struct HomeView: View {
+    @Binding var isDashboardView: Bool
     @EnvironmentObject var themeManager: ThemeManager
     @Binding var selectedCountry: String
     let countries: [String]
@@ -223,9 +221,8 @@ struct HomeView: View {
                 .foregroundColor(.gray)
                 .padding(.bottom, 10)
             
-            // Get Started Button
             Button(action: {
-                // Navigate to Dashboard or perform another action
+                isDashboardView = true
             }) {
                 Text("Get Started")
                     .font(.headline)
