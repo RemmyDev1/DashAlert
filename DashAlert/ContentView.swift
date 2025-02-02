@@ -208,17 +208,23 @@ struct HomeView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
-            // Welcome text
-            Text("Welcome to DashAlert!")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(.dashAlertGreen)
-                .padding(.top, 40)
+            
+            HStack {
+                Image(systemName: "car")
+                    .font(.largeTitle)
+                    .foregroundColor(.dashAlertGreen)
+                Text("DashAlert")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.dashAlertGreen)
+                Spacer()
+            }
+            .padding(.top, 40)
 
             // Selected Country Reminder
-            Text("You have selected \(selectedCountry)")
+            Text("Your personal road safety assistant")
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundColor(.dashAlertWhite)
                 .padding(.bottom, 10)
             
             Button(action: {
