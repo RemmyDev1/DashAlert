@@ -64,7 +64,7 @@ struct ContentView: View {
                             Label("Settings", systemImage: "gear")
                         }
                     } label: {
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: "gearshape")
                             .font(.title)
                             .padding(6)
                             .background(Color.dashAlertGreen)
