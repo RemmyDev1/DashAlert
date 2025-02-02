@@ -1,7 +1,7 @@
 import SwiftUI
 import EventKit
 
-struct CalenderView: View {
+struct ReminderView: View {
     @State private var title: String = ""
     @State private var dueDate: Date = Date()
     @State private var notes: String = ""
@@ -146,8 +146,7 @@ struct CalenderView: View {
             }
             if granted {
                 checkAccessToReminders()
-            }
-        }
+            }	        }
     }
     
     /*
@@ -184,7 +183,7 @@ struct CalenderView: View {
                 alertMessage = "Your reminder has been created successfully."
                 showAlert = true
             } catch {
-                print("Error creating reminder: \(error)")
+                print("Error creating reminder: \(error)")		
                 alertMessage = "Failed to create reminder."
                 showAlert = true
             }
