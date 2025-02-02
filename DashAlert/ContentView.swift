@@ -20,33 +20,48 @@ struct RoundedCorner: Shape {
 struct ContentView: View {
     @State private var isReminder = false
     @State private var isDashboardView = false
+    @State private var isEmergencyGuideView = false
     @EnvironmentObject var themeManager: ThemeManager
     @State private var isSettingsMenuOpen = false
     
     @AppStorage("selectedCountry") private var selectedCountry = "United States"
 
     let countries = ["United States", "Canada", "Mexico", "United Kingdom", "Australia", "Germany", "France", "Italy", "Spain", "China", "Japan", "India"]
+    
+    let emergencyNumbers = [
+        "United States": "911",
+        "Canada": "911",
+        "Mexico": "060",
+        "United Kingdom": "999",
+        "Australia": "000",
+        "Germany": "110",
+        "France": "15",
+        "Italy": "113",
+        "Spain": "112",
+        "China": "110",
+        "Japan": "110",
+        "India": "100"
+    ]
 
     var body: some View {
         ZStack {
-            // Main background for all content
             Color.dashAlertBlack
                 .ignoresSafeArea()
 
-            // Main content with extra bottom padding so it doesn't overlap the bottom bar
             VStack {
                 if isReminder {
                     ReminderView()
                 } else if isDashboardView {
                     DashboardView()
+                } else if isEmergencyGuideView{
+                    EmergencyGuideView()
                 } else {
-                    HomeView(isDashboardView: $isDashboardView, selectedCountry: $selectedCountry, countries: countries)
+                    HomeView(isDashboardView: $isDashboardView, isEmergencyGuideView: $isEmergencyGuideView ,selectedCountry: $selectedCountry, countries: countries)
                 }
-                Spacer()  // Push content to the top
+                Spacer()	
             }
-            .padding(.bottom, 70)  // Reserve space for the bottom bar
+            .padding(.bottom, 70)
 
-            // Top-right menu remains unchanged
             VStack {
                 HStack {
                     Spacer()
@@ -63,12 +78,17 @@ struct ContentView: View {
                         }) {
                             Label("Settings", systemImage: "gear")
                         }
+                        Button(action: {
+                            callEmergencyNumber()
+                        }) {
+                            Text("Call \(selectedCountry) Road Police")
+                        }
                     } label: {
                         Image(systemName: "gearshape")
                             .font(.title)
                             .padding(6)
                             .background(Color.dashAlertGreen)
-                            .foregroundColor(.white)
+                            .foregroundColor(.white)	
                             .cornerRadius(10)
                     }
                 }
@@ -78,7 +98,7 @@ struct ContentView: View {
                 Spacer()
             }
 
-            // Bottom Bar Container
+            // Bottom Bar
             VStack {
                 Spacer()
                 HStack {
@@ -124,9 +144,8 @@ struct ContentView: View {
                     }
                     Spacer()
                 }
-                .frame(height: 60)  // Fixed height for the bottom bar
+                .frame(height: 60)
                 .background(Color.dashAlertDarkGray)
-                // Clip only the top corners so the bar has a smooth edge
                 .clipShape(RoundedCorner(radius: 15, corners: [.topLeft, .topRight]))
                 .shadow(radius: 2)
                 .padding(.horizontal)
@@ -137,6 +156,15 @@ struct ContentView: View {
         .sheet(isPresented: $isSettingsMenuOpen) {
             SettingsMenu(selectedCountry: $selectedCountry, countries: countries, isSettingsMenuOpen: $isSettingsMenuOpen)
                 .background(Color.dashAlertBlack)
+        }
+    }
+    
+    // Function to handle emergency call
+    func callEmergencyNumber() {
+        guard let number = emergencyNumbers[selectedCountry] else { return }
+        guard let url = URL(string: "tel://\(number)") else { return }
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
 }
@@ -150,7 +178,6 @@ struct SettingsMenu: View {
     var body: some View {
         NavigationView {
             VStack {
-                // Country selection reminder
                 Text("Currently Selected Country: \(selectedCountry)")
                     .font(.subheadline)
                     .foregroundColor(.gray)
@@ -174,7 +201,7 @@ struct SettingsMenu: View {
             }
             .navigationBarTitle("Settings", displayMode: .inline)
             .navigationBarItems(trailing: Button(action: {
-                isSettingsMenuOpen.toggle()  // Close the settings menu when tapped
+                isSettingsMenuOpen.toggle()
             }) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.title)
@@ -187,24 +214,10 @@ struct SettingsMenu: View {
 
 struct HomeView: View {
     @Binding var isDashboardView: Bool
+    @Binding var isEmergencyGuideView: Bool
     @EnvironmentObject var themeManager: ThemeManager
     @Binding var selectedCountry: String
     let countries: [String]
-
-    let emergencyNumbers = [
-        "United States": "911",
-        "Canada": "911",
-        "Mexico": "060",
-        "United Kingdom": "999",
-        "Australia": "000",
-        "Germany": "110",
-        "France": "15",
-        "Italy": "113",
-        "Spain": "112",
-        "China": "110",
-        "Japan": "110",
-        "India": "100"
-    ]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
@@ -221,7 +234,6 @@ struct HomeView: View {
             }
             .padding(.top, 40)
 
-            // Selected Country Reminder
             Text("Your personal road safety assistant")
                 .font(.subheadline)
                 .foregroundColor(.dashAlertWhite)
@@ -232,28 +244,27 @@ struct HomeView: View {
             }) {
                 Text("Get Started")
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(.dashAlertWhite)
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .background(Color.dashAlertGreen)
                     .cornerRadius(12)
             }
             .padding(.horizontal, 16)
-
-            // Call Emergency Number Button
+            Spacer()
+            
             Button(action: {
-                callEmergencyNumber()
+                isEmergencyGuideView = true
             }) {
-                Text("Call \(selectedCountry) Road Police")
+                Text("Emergency Guide")
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(.dashAlertWhite)
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .background(Color.dashAlertRed)
                     .cornerRadius(12)
             }
             .padding(.horizontal, 16)
-
             Spacer()
         }
         .padding(.vertical, 16)
@@ -262,14 +273,5 @@ struct HomeView: View {
         .padding(.horizontal, 16)
         .frame(maxHeight: .infinity, alignment: .center)
         .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
-    }
-
-    // Function to handle emergency call
-    func callEmergencyNumber() {
-        guard let number = emergencyNumbers[selectedCountry] else { return }
-        guard let url = URL(string: "tel://\(number)") else { return }
-        if UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
     }
 }

@@ -9,4 +9,4 @@ struct DashAlertApp: App {
                 .environmentObject(themeManager)
         }
     }
-}	    	
+}	    		
