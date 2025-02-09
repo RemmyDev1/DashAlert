@@ -1,7 +1,7 @@
 import SwiftUI
 import EventKit
 
-// Define a new struct for a cause
+// The causes of each Warning Sign
 struct Cause: Identifiable, Hashable {
     let id = UUID()
     let name: String
@@ -12,7 +12,7 @@ struct Cause: Identifiable, Hashable {
     let averageCost: Double?
 }
 
-// Update the WarningSign struct to include a list of causes
+// warning signs in the dashboard a struct to keep all of them
 struct WarningSign: Identifiable, Hashable {
     let id = UUID()
     let name: String
@@ -20,7 +20,7 @@ struct WarningSign: Identifiable, Hashable {
     let causes: [Cause]
 }
 
-// Stores all the signs and filters the signs
+// an observable object that stores all the signs and filters the signs using a function to search through them
 class WarningSignsViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var signs = [
@@ -38,7 +38,7 @@ class WarningSignsViewModel: ObservableObject {
 
                 ),
                 Cause(
-                    name: "Check Engine Light",
+                    name: "issue with the engine or emissions system",
                     description: "Indicates an issue with the engine or emissions system. Common causes include loose gas cap, faulty oxygen sensor, or catalytic converter issues.",
                     solution: "First, check if the gas cap is loose and tighten it. If the light persists after driving for a while, professional diagnosis is needed.",
                     isComplexRepair: true,

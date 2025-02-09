@@ -1,6 +1,7 @@
 import SwiftUI
 import EventKit
 
+//Main Reminder View
 struct ReminderView: View {
     @State private var title: String = ""
     @State private var dueDate: Date = Date()

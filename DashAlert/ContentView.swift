@@ -302,7 +302,7 @@ struct HomeView: View {
     }
 }
 
-// Creates a clean orderly look for the text and makes them functional to press
+// Creates a clean orderly look for the text and makes them hae an animation when they are pressed
 struct FeatureRow: View {
     let icon: String
     let title: String
