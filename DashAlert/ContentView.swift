@@ -18,11 +18,11 @@ struct RoundedCorner: Shape {
 
 // Main View
 struct ContentView: View {
-    @State private var isReminder = false
-    @State private var isDashboardView = false
-    @State private var isEmergencyGuideView = false
+    @State var isReminder = false
+    @State var isDashboardView = false
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var isSettingsMenuOpen = false
+    @State var isSettingsMenuOpen = false
+    @State var showWelcomePopup = false
     
     @AppStorage("selectedCountry") private var selectedCountry = "United States"
 
@@ -47,21 +47,25 @@ struct ContentView: View {
         ZStack {
             Color.dashAlertBlack
                 .ignoresSafeArea()
-
+            
             VStack {
                 if isReminder {
                     ReminderView()
                 } else if isDashboardView {
                     DashboardView()
-                } else if isEmergencyGuideView{
-                    EmergencyGuideView()
                 } else {
-                    HomeView(isDashboardView: $isDashboardView, isEmergencyGuideView: $isEmergencyGuideView ,selectedCountry: $selectedCountry, countries: countries)
+                    HomeView(
+                        selectedCountry: $selectedCountry,
+                        isDashboardView: $isDashboardView,
+                        isReminder: $isReminder,
+                        isSettingsMenuOpen: $isSettingsMenuOpen,
+                        countries: countries	
+                    )
                 }
-                Spacer()	
+                Spacer()
             }
             .padding(.bottom, 70)
-
+            
             VStack {
                 HStack {
                     Spacer()
@@ -81,14 +85,14 @@ struct ContentView: View {
                         Button(action: {
                             callEmergencyNumber()
                         }) {
-                            Text("Call \(selectedCountry) Road Police")
+                            Text("Call \(selectedCountry) Road Police")							
                         }
                     } label: {
                         Image(systemName: "gearshape")
                             .font(.title)
                             .padding(6)
                             .background(Color.dashAlertGreen)
-                            .foregroundColor(.white)	
+                            .foregroundColor(.white)
                             .cornerRadius(10)
                     }
                 }
@@ -97,7 +101,7 @@ struct ContentView: View {
                 
                 Spacer()
             }
-
+            
             // Bottom Bar
             VStack {
                 Spacer()
@@ -213,65 +217,126 @@ struct SettingsMenu: View {
 }
 
 struct HomeView: View {
-    @Binding var isDashboardView: Bool
-    @Binding var isEmergencyGuideView: Bool
-    @EnvironmentObject var themeManager: ThemeManager
     @Binding var selectedCountry: String
+    @Binding var isDashboardView: Bool
+    @Binding var isReminder: Bool
+    @Binding var isSettingsMenuOpen: Bool
     let countries: [String]
+    
+    @EnvironmentObject var themeManager: ThemeManager
+    @State private var showWelcomePopup = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            
-            HStack {
-                Image(systemName: "car")
-                    .font(.largeTitle)
-                    .foregroundColor(.dashAlertGreen)
-                Text("DashAlert")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.dashAlertGreen)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                HStack {
+                    Image(systemName: "car")
+                        .font(.largeTitle)
+                        .foregroundColor(.dashAlertGreen)
+                    Text("DashAlert")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.dashAlertGreen)
+                    Spacer()
+                }
+                .padding(.top, 40)
+
+                Text("Your personal road safety assistant")
+                    .font(.subheadline)
+                    .foregroundColor(.dashAlertWhite)
+                    .padding(.bottom, 10)
+                
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("""
+                    DashAlert was created with a clear vision - to empower drivers with \
+                    instant access to critical vehicle information and safety resources. \
+                    We believe every driver deserves peace of mind on the road.
+                    """)
+                    .foregroundColor(.dashAlertWhite)
+                    
+                    Text("Key Features:")
+                        .font(.title3)
+                        .bold()
+                        .padding(.top)
+                        .foregroundColor(.dashAlertGreen)
+                    
+                    FeatureRow(
+                        icon: "exclamationmark.triangle.fill",
+                        title: "Warning Sign Database",
+                        description: "Instant access to 25+ vehicle warning signs with detailed repair information"
+                    ) {
+                        isDashboardView = true
+                    }
+                    
+                    FeatureRow(
+                        icon: "calendar.badge.clock",
+                        title: "Maintenance Reminders",
+                        description: "Create customized reminders for vehicle servicing"
+                    ) {
+                        isReminder = true
+                    }
+                    
+                    FeatureRow(
+                        icon: "globe",
+                        title: "Global Emergency Support",
+                        description: "Direct access to local emergency services in 12+ countries"
+                    ) {
+                        isSettingsMenuOpen = true
+                    }
+                    
+                    FeatureRow(
+                        icon: "paintbrush.pointed.fill",
+                        title: "Custom Themes",
+                        description: "Choose between light and dark mode for optimal visibility"
+                    ) {
+                        themeManager.isDarkMode.toggle()
+                    }
+                }
+                .padding(.horizontal, 16)
+                
                 Spacer()
             }
-            .padding(.top, 40)
-
-            Text("Your personal road safety assistant")
-                .font(.subheadline)
-                .foregroundColor(.dashAlertWhite)
-                .padding(.bottom, 10)
-            
-            Button(action: {
-                isDashboardView = true
-            }) {
-                Text("Get Started")
-                    .font(.headline)
-                    .foregroundColor(.dashAlertWhite)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .background(Color.dashAlertGreen)
-                    .cornerRadius(12)
-            }
-            .padding(.horizontal, 16)
-            Spacer()
-            
-            Button(action: {
-                isEmergencyGuideView = true
-            }) {
-                Text("Emergency Guide")
-                    .font(.headline)
-                    .foregroundColor(.dashAlertWhite)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .background(Color.dashAlertRed)
-                    .cornerRadius(12)
-            }
-            .padding(.horizontal, 16)
-            Spacer()
+            .padding(.vertical, 16)
         }
-        .padding(.vertical, 16)
         .background(Color.dashAlertBlack)
-        .cornerRadius(15)
-        .padding(.horizontal, 16)
-        .frame(maxHeight: .infinity, alignment: .center)
-        .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+    }
+}
+
+// Creates a clean orderly look for the text and makes them functional to press
+struct FeatureRow: View {
+    let icon: String
+    let title: String
+    let description: String
+    var action: (() -> Void)?
+    
+    @State private var isPressed = false
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 15) {
+            Image(systemName: icon)
+                .font(.title)
+                .foregroundColor(.dashAlertGreen)
+                .frame(width: 40)
+            
+            VStack(alignment: .leading, spacing: 5) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(isPressed ? .dashAlertGreen : .dashAlertWhite)
+                
+                Text(description)
+                    .foregroundColor(.dashAlertWhite.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(.vertical, 8)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            action?()
+        }
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in isPressed = true }
+                .onEnded { _ in isPressed = false }
+        )
     }
 }
