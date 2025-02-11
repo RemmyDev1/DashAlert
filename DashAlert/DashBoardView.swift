@@ -14,13 +14,13 @@ struct Cause: Identifiable, Hashable {
 
 // warning signs in the dashboard a struct to keep all of them
 struct WarningSign: Identifiable, Hashable {
-    let id = UUID()
+    let id = UUID()			
     let name: String
     let image: String
     let causes: [Cause]
 }
 
-// an observable object that stores all the signs and filters the signs using a function to search through them
+// an observable object that stores all the signs and filters the signs using a function to search through them		
 class WarningSignsViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var signs = [

@@ -14,10 +14,10 @@ struct RoundedCorner: Shape {
         )
         return Path(path.cgPath)
     }
-}
+}	
 
 // Main View
-struct ContentView: View {
+struct ContentView: View{					
     @State var isReminder = false
     @State var isDashboardView = false
     @EnvironmentObject var themeManager: ThemeManager
