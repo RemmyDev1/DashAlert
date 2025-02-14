@@ -484,7 +484,7 @@ struct GroupedDetailView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text(cause.name)
                             .font(.headline)
-                            .foregroundColor(.dashAlertGreen)
+                            .foregroundColor(.dashAlertRed)
                             .fontWeight(.bold)
                         
                         Text("Description:")
